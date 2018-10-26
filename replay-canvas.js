@@ -61,30 +61,79 @@ const getRelativeCoordinates = (event, reference) => {
 }
 
 const canvas = document.getElementById('cool-draw')
+canvas.setAttribute('width', document.getElementsByClassName('container')[0].clientWidth)
+
 const ctx = canvas.getContext('2d')
 
-const clickedPoints = []
+let clickedPoints = []
 let mousepressed = false
+let distanceTravelled = 0
+let start
 
 const formsTriangle = (ptA, ptB, ptC) => ptA.x * (ptB.y - ptC.y) + ptB.x * (ptC.y - ptA.y) + ptC.x * (ptA.y - ptB.y)
 
-const clickRegister = ev => {
+const updateDistance = (num = clickedPoints.length) => {
+  if (num > 1) {
+    let p1 = clickedPoints[num - 2]
+    let p2 = clickedPoints[num - 1]
+    distanceTravelled += Math.hypot(p2.x - p1.x, p2.y - p2.y)
+  }
+  document.getElementById('distance-calculator').innerHTML = `Drawn ${distanceTravelled} meters.`
+}
+
+const addPoint = ({ x, y, t }, index) => {
+  let obj = {
+    x,
+    y,
+    t
+  }
+
+  if (!clickedPoints.length) {
+    start = Date.now()
+    obj.d = 0
+  } else {
+    obj.d = Date.now() - start
+  }
+
+  if (index) {
+    clickedPoints[index] = obj
+  } else {
+    clickedPoints.push(obj)
+  }
+}
+
+const draw = (pt, index) => {
+  if (pt.t === 'c') {
+    ctx.beginPath()
+    ctx.moveTo(pt.x, pt.y)
+    mousepressed = true
+  } else if (pt.t === 'd' && mousepressed) {
+    ctx.lineTo(pt.x, pt.y)
+    ctx.stroke()
+    updateDistance(index)
+  } else if (pt.t === 'r') {
+    mousepressed = false
+    ctx.closePath()
+  }
+}
+
+const mouseRecorder = ev => {
   const target = ev.target || ev.srcElement
   const coords = getRelativeCoordinates(ev, target)
+  let obj = {
+    x: coords.x, y: coords.y
+  }
+
   switch (ev.type) {
     case 'mousedown':
     case 'mouseup':
-      clickedPoints.push({ x: coords.x, y: coords.y, t: ev.type })
-      mousepressed = ev.type === 'mousedown'
-      if (ev.type === 'mousedown') {
-        ctx.beginPath()
-        ctx.moveTo(coords.x, ev.y)
-      } else {
-        ctx.closePath()
-      }
+
+      obj.t = ev.type === 'mousedown' ? 'c' : 'r' // clicked = 'c' ; releases = 'r'
+      addPoint(obj)
       break
 
     case 'mousemove':
+      obj.t = 'd' // dragged = 'd'
       if (mousepressed) {
         if (clickedPoints.length > 2) {
           const numPointsRegistered = clickedPoints.length
@@ -93,29 +142,59 @@ const clickRegister = ev => {
             !formsTriangle(
               clickedPoints[numPointsRegistered - 2],
               clickedPoints[numPointsRegistered - 1],
-              { x: coords.x, y: coords.y }
+              obj
             )
           ) {
-            clickedPoints[numPointsRegistered - 1] = { x: coords.x, y: coords.y, t: ev.type }
+            addPoint(obj, numPointsRegistered - 1)
           } else {
-            clickedPoints[numPointsRegistered] = { x: coords.x, y: coords.y, t: ev.type }
+            addPoint(obj)
           }
         } else {
-          clickedPoints.push({ x: coords.x, y: coords.y, t: ev.type })
+          addPoint(obj)
         }
-
-        ctx.lineTo(coords.x, coords.y)
-        ctx.stroke()
       }
   }
+
+  draw(obj)
 }
 
 const clearCanvas = () => {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+  distanceTravelled = 0
+  updateDistance()
+}
+
+const shred = () => {
+  clearCanvas()
+
+  clickedPoints = []
+}
+
+const replay = () => {
+  const num = clickedPoints.length
+  clearCanvas()
+  canvas.removeEventListener('mousedown', mouseRecorder)
+  canvas.removeEventListener('mousemove', mouseRecorder)
+  canvas.removeEventListener('mouseup', mouseRecorder)
+  clickedPoints.map((pt, index) => {
+    setTimeout(() => {
+      draw(pt, index)
+
+      if (index === num - 1) {
+        canvas.addEventListener('mousedown', mouseRecorder)
+        canvas.addEventListener('mousemove', mouseRecorder)
+        canvas.addEventListener('mouseup', mouseRecorder)
+      }
+    }, pt.d)
+  })
 }
 
 clearCanvas()
 
-canvas.addEventListener('mousedown', clickRegister)
-canvas.addEventListener('mousemove', clickRegister)
-canvas.addEventListener('mouseup', clickRegister)
+canvas.addEventListener('mousedown', mouseRecorder)
+canvas.addEventListener('mousemove', mouseRecorder)
+canvas.addEventListener('mouseup', mouseRecorder)
+
+const showPayload = () => {
+  document.getElementById('payload').innerHTML = JSON.stringify(clickedPoints, null, 2)
+}
