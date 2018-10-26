@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas replay</title>
+    <style>
+      .container {
+        width: 100%;
+        max-width: 1300px;
+        margin: 0 auto;
+      }
+
+      #cool-draw {
+        box-shadow: 0 0 2px #333;
+        margin: 0px auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <canvas id="cool-draw" width='800' height='600'>
+      </canvas>
+      <button onclick="clearCanvas()">Clear</button>
+      <button onclick="replay()">Replay</button>
+    </div>
+    <script src="replay-canvas.js"></script>
+  </body>
+
+</html>
