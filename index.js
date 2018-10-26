@@ -13,16 +13,16 @@
   let startTime = new Date()
   let events = []
 
-  const recordStart = (e) => {
+  const recordStart = (event) => {
     recordingStarted = true
 
     // Record the start of the line
-    const boundingRect = e.target.getBoundingClientRect()
-    startX = e.clientX - boundingRect.left
-    startY = e.clientY - boundingRect.top
+    const boundingRect = event.target.getBoundingClientRect()
+    startX = event.clientX - boundingRect.left
+    startY = event.clientY - boundingRect.top
   }
 
-  const recordStop = (e) => {
+  const recordStop = (event) => {
     if (recordingStarted) {
       recordingStarted = false
 
@@ -32,9 +32,9 @@
       startTime = endTime
 
       // Compute the end of the line
-      const boundingRect = e.target.getBoundingClientRect()
-      const endX = e.clientX - boundingRect.left
-      const endY = e.clientY - boundingRect.top
+      const boundingRect = event.target.getBoundingClientRect()
+      const endX = event.clientX - boundingRect.left
+      const endY = event.clientY - boundingRect.top
 
       // Draw the line
       canvasContext.beginPath()
@@ -52,14 +52,18 @@
     }
   }
 
-  const replayEvent = (currentEventId = 0) => {
-    if (currentEventId === events.length) return
+  const replayEvent = (eventId = 0) => {
+    if (eventId === events.length) {
+      startTime = new Date()
+
+      return
+    }
 
     // Get current event data
-    const [timeDifference, startX, startY, endX, endY] = events[currentEventId]
+    const [timeDifference, startX, startY, endX, endY] = events[eventId]
 
     // Reset canvas and distance
-    if (currentEventId === 0) {
+    if (eventId === 0) {
       canvasContext.clearRect(0, 0, canvas.width, canvas.height)
 
       totalDistance = 0
@@ -78,7 +82,7 @@
       distance.innerText = `Distance Covered: ${Math.round(totalDistance * 100) / 100} m`
 
       // Replay next event
-      replayEvent(currentEventId + 1)
+      replayEvent(eventId + 1)
     }, timeDifference)
   }
 
