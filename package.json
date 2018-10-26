@@ -1,0 +1,22 @@
+{
+  "name": "jsfoo-frontend",
+  "version": "1.0.0",
+  "description": "SUPER EFFICIENT DRAWING BOARD",
+  "main": "index.js",
+  "scripts": {
+    "start": "serve -o"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noonAcademy/jsfoo-frontend.git"
+  },
+  "author": "Karthik M A M <karthik_m_a_m@outlook.com> (https://karthikmam.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/noonAcademy/jsfoo-frontend/issues"
+  },
+  "homepage": "https://github.com/noonAcademy/jsfoo-frontend#readme",
+  "dependencies": {
+    "serve": "^10.0.2"
+  }
+}
