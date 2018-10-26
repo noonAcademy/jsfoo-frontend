@@ -51,6 +51,35 @@
     }
   }
 
+  const replayEvent = (currentEventId = 0) => {
+    if (currentEventId === events.length) return
+
+    // Get current event data
+    const [timeDifference, startX, startY, endX, endY] = events[currentEventId]
+
+    // Reset canvas and distance
+    if (currentEventId === 0) {
+      canvasContext.clearRect(0, 0, canvas.width, canvas.height)
+
+      totalDistance = 0
+    }
+
+    setTimeout(() => {
+      // Draw the line
+      canvasContext.beginPath()
+      canvasContext.strokeStyle = 'black'
+      canvasContext.moveTo(startX, startY)
+      canvasContext.lineTo(endX, endY)
+      canvasContext.stroke()
+
+      // Update the distance covered
+      totalDistance += Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY))
+      distance.innerText = `Distance Covered: ${Math.round(totalDistance * 100) / 100} m`
+
+      // Replay next event
+      replayEvent(currentEventId + 1)
+    }, timeDifference)
+  }
   canvas.addEventListener('mousedown', recordStart)
   canvas.addEventListener('mouseleave', recordStop)
   canvas.addEventListener('mouseup', recordStop)
