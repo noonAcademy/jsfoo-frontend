@@ -10,11 +10,12 @@ body {
     padding: 5px;
 }
 
-.distance {
-    align-self: flex-end;
+.canvas {
+  border: 1px solid black;
+  box-sizing: border-box;
 }
 
-.canvas {
-    border: 1px solid black;
-    box-sizing: border-box;
+.dashboard {
+  display: flex;
+  justify-content: space-between;
 }

@@ -1,5 +1,6 @@
 (function () {
   const canvas = document.getElementById('canvas')
+  const replay = document.getElementById('replay')
   const distance = document.getElementById('distance')
   const canvasContext = canvas.getContext('2d')
 
@@ -80,7 +81,10 @@
       replayEvent(currentEventId + 1)
     }, timeDifference)
   }
+
+  // Add listeners
   canvas.addEventListener('mousedown', recordStart)
   canvas.addEventListener('mouseleave', recordStop)
   canvas.addEventListener('mouseup', recordStop)
+  replay.addEventListener('click', () => replayEvent())
 })();
