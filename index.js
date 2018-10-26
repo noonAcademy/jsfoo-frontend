@@ -6,7 +6,11 @@
   let startX = 0
   let startY = 0
   let recordingStarted = false
+
   let totalDistance = 0
+
+  let startTime = new Date()
+  let events = []
 
   const recordStart = (e) => {
     recordingStarted = true
@@ -21,7 +25,12 @@
     if (recordingStarted) {
       recordingStarted = false
 
-      // Record the end of the line
+      // Compute time delay
+      const endTime = new Date()
+      const timeDifference = endTime - startTime
+      startTime = endTime
+
+      // Compute the end of the line
       const boundingRect = e.target.getBoundingClientRect()
       const endX = e.clientX - boundingRect.left
       const endY = e.clientY - boundingRect.top
@@ -36,6 +45,9 @@
       // Update the distance covered
       totalDistance += Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY))
       distance.innerText = `Distance Covered: ${Math.round(totalDistance * 100) / 100} m`
+
+      // Record the event
+      events.push([timeDifference, startX, startY, endX, endY])
     }
   }
 
