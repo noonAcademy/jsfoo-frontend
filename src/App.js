@@ -8,6 +8,9 @@ class App extends Component {
         <header className="App-header">
           <p> SUPER EFFICIENT DRAWING BOARD </p>
         </header>
+        <div className="drawing-container">
+          <canvas id="drawing-board" width="700" height="400"></canvas>
+        </div>
       </div>
     );
   }

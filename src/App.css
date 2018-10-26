@@ -1,3 +1,6 @@
+.App {
+  text-align: center;
+}
 .App-header {
   background-color: #282c34;
   max-height: 100px;
@@ -6,5 +9,16 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #ffffff;
+}
+
+.drawing-container {
+  display: inline-block;
+}
+
+canvas {
+  background-color: #fff;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 3px 0px #ccc;
 }
