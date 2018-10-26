@@ -36,7 +36,7 @@ Ex: Suppose to draw a line, you used events in the following order
     1. mouseDown
     2. drag(s)
     3. mouseUp
-Example: 
+Example:
 ```
 [
   {
@@ -73,7 +73,7 @@ Then you need to reduce the overall size of the array, and the size of the indiv
 
 ## How will you guys contact me?
 1. Mention your details here:
-    1. Name:
-    2. Email:
-    3. Contact Number:
-    4. Company Name: 
+    1. Name: Jagadish, K.
+    2. Email: k.jagdish@gmail.com
+    3. Contact Number: 9916128366
+    4. Company Name: Walmart
