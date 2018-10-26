@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { distanceBetweenCoordinates } from "./utils";
 import './App.css';
 
 class App extends Component {
@@ -6,7 +7,9 @@ class App extends Component {
     super(props);
     this.canvasRef = React.createRef();
     this.state = {
-      isDrawing: false
+      isDrawing: false,
+      staringCoodinates: null,
+      distance: 0
     }
   }
 
@@ -18,19 +21,28 @@ class App extends Component {
   _handleOnMouseDown = (e) => {
     const ctx = this._getContext();
     const { offsetX, offsetY } = e.nativeEvent;
-    this.setState({ isDrawing: true }, () => {
+    this.setState({ isDrawing: true, staringCoodinates: [offsetX, offsetY] }, () => {
       // Moving staring point for a new line.
       ctx.moveTo(offsetX, offsetY);
     });
   }
 
   _handleOnMouseMove = (e) => {
-    const { isDrawing } = this.state;
+    const { isDrawing, staringCoodinates } = this.state;
     const ctx = this._getContext();
+    const { offsetX, offsetY } = e.nativeEvent;
     if (isDrawing) {
       // Connecting the last point with current coordinates
-      ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      ctx.lineTo(offsetX, offsetY);
       ctx.stroke();
+
+      // Updating live distance
+      const distance = distanceBetweenCoordinates(
+        staringCoodinates[0],
+        staringCoodinates[1],
+        offsetX,
+        offsetY)
+      this.setState({ distance: parseFloat(distance).toFixed(2) });
     }
   }
 
@@ -55,6 +67,7 @@ class App extends Component {
             onMouseUp={this._handleOnMouseUp}
           />
         </div>
+        <h2>Distance: {this.state.distance} meter(s)</h2>
       </div>
     );
   }
