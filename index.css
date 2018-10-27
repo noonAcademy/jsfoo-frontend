@@ -1,0 +1,25 @@
+body {
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    padding: 5px;
+}
+
+.canvas {
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.dashboard {
+  display: flex;
+  justify-content: space-between;
+}
+
+.actions {
+  display: flex;
+}
