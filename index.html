@@ -99,7 +99,9 @@
 		}
 
 		var replay = function () {
-			if(currentMouseIter == mouseEventLogBackup.length) return;
+			if(currentMouseIter == mouseEventLogBackup.length) {
+				return;
+			}
 
 			var mouseEvent = mouseEventLogBackup[currentMouseIter++];
 			
@@ -107,7 +109,7 @@
 				canvasMouseDownHandler({clientX: mouseEvent.mouseX, clientY: mouseEvent.mouseY});
 				setTimeout(replay, mouseEventLogBackup[currentMouseIter].time);
 			}
-			else if(mouseEvent.type = "drag") {
+			else if(mouseEvent.type == "drag") {
 				canvasMouseMoveHandler({clientX: mouseEvent.mouseX, clientY: mouseEvent.mouseY});
 				if(currentMouseIter != mouseEventLogBackup.length - 1) {
 					setTimeout(replay, mouseEventLogBackup[currentMouseIter].time);
@@ -116,10 +118,10 @@
 					setTimeout(replay, 5);
 				}
 			}
-			else if(mouseEvent.type = "mouseUp") {
-				canvasMouseDownHandler({clientX: mouseEvent.mouseX, clientY: mouseEvent.mouseY});
+			else if(mouseEvent.type == "mouseUp") {
+				canvasMouseUpHandler({clientX: mouseEvent.mouseX, clientY: mouseEvent.mouseY});
 				if(currentMouseIter < mouseEventLogBackup.length) {
-					setTimeout(replay, mouseEventLogBackup[currentMouseIter].time - mouseEventLogBackup[currentMouseIter - 1].time);
+					setTimeout(replay, mouseEventLogBackup[currentMouseIter-1].time - mouseEventLogBackup[currentMouseIter - 2].time);
 				}
 			}
 		}
