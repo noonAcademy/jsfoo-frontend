@@ -17,10 +17,16 @@ class App extends Component {
     return el.getContext("2d");
   }
 
-  _handleResetCanvas = () => {
+  _handleClearCanvas = () => {
     const ctx = this._getContext();
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     this.setState({ distance: 0 });
+  }
+
+  _handleResetCanvas = () => {
+    this._handleClearCanvas();
+    this.records = [];
+    this.staredAt = null;
   }
 
   _handleRecord = (coodinates) => {
@@ -55,7 +61,7 @@ class App extends Component {
   }
 
   _handleReply = async () => {
-    this._handleResetCanvas();
+    this._handleClearCanvas();
 
     await Promise.all(this.records.map((record, index) => {
       return record[3].map((diff) => {
