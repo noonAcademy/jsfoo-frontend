@@ -73,7 +73,7 @@ Then you need to reduce the overall size of the array, and the size of the indiv
 
 ## How will you guys contact me?
 1. Mention your details here:
-    1. Name:
-    2. Email:
-    3. Contact Number:
-    4. Company Name: 
+    1. Name: Himadri Ghosh
+    2. Email: himadrighosh13@gmail.com
+    3. Contact Number: 9800473936
+    4. Company Name: Mobisy
