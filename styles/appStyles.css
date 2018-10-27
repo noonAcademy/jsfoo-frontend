@@ -12,3 +12,9 @@
     color: coral;
     border-color: grey;
 }
+.btn:focus {
+    outline: 0;
+}
+#playBtn {
+    display: none;
+}

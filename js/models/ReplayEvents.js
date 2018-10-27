@@ -55,8 +55,8 @@ class ReplayEvents {
     if (this.currentEvent != null) {
       this.currentEvent.addAction(currAction);
     }
-    this.mouseDownX = x;
-    this.mouseDownY = y;
+    this.lastMouseX = x;
+    this.lastMouseY = y;
     event.preventDefault();
     return false;
   }
