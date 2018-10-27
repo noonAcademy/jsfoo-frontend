@@ -76,4 +76,4 @@ Then you need to reduce the overall size of the array, and the size of the indiv
     1. Name: Karthik M A M
     2. Email: karthik_m_a_m@outlook.com
     3. Contact Number: 9487907066
-    4. Company Name: 
+    4. Company Name: Qube Cinema Technologies
