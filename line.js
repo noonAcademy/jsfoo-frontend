@@ -1,8 +1,9 @@
-import { fromEvent, merge, concat, interval, from } from "rxjs";
+import { fromEvent, merge, concat, interval, from, combineLatest } from "rxjs";
 import {
   switchMap,
   takeUntil,
   map,
+  filter,
   share,
   scan,
   first,
@@ -10,7 +11,13 @@ import {
   timeInterval,
   mapTo,
   takeLast,
-  take
+  startWith,
+  take,
+  skipUntil,
+  repeat,
+  buffer,
+  tap,
+  skip
 } from "rxjs/operators";
 
 const lineCanvas = document.getElementById("lineDraw");
@@ -27,7 +34,8 @@ function getMousePos(canvas) {
   return function(event) {
     return {
       x: event.clientX - left,
-      y: event.clientY - top
+      y: event.clientY - top,
+      eventType: event.type
     };
   };
 }
@@ -40,50 +48,50 @@ function getDistance(start, end) {
   return Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2));
 }
 
+const dragStartStream = mouseDownStream.pipe(map(getMousePos(lineCanvas)));
+const dragEndStream = mouseUpStream.pipe(map(getMousePos(lineCanvas)));
+
 let globalStart = { x: 0, y: 0 };
 let distance = 0;
+let coordinates = [];
 
-mouseDownStream
-  .pipe(map(getMousePos(lineCanvas)), share())
-  .subscribe(startPos => {
-    const { width, height } = lineCanvas.getBoundingClientRect();
-    const { x, y } = startPos;
-    distance = 0;
-    globalStart = startPos;
-    distanceDisplay.innerHTML = "0";
-    context.beginPath();
-    context.arc(x, y, 2, 0, 2 * Math.PI);
-    context.fillStyle = "black";
-    context.fill();
-    context.moveTo(startPos.x, startPos.y);
-  });
-
-const dragStream = mouseDownStream.pipe(
-  switchMap(event =>
-    mouseMoveStream.pipe(map(getMousePos(lineCanvas)), takeUntil(mouseUpStream))
-  )
-);
-
-const firstAndLastStream = merge(
-  dragStream.pipe(first()),
-  dragStream.pipe(takeLast(1))
-);
-
-dragStream.pipe(first()).subscribe(val => console.log(val, "first"));
-dragStream.pipe(last()).subscribe(val => console.log(val, "last"));
-
-firstAndLastStream.subscribe(val => {
-  console.log(val, "first and last");
-});
-
-mouseUpStream.pipe(map(getMousePos(lineCanvas)), share()).subscribe(endPos => {
-  const { x, y } = endPos;
-  distance = distance + getDistance(globalStart, endPos);
-  distanceDisplay.innerHTML = distance.toFixed(2);
+function drawDot({ x, y }) {
+  context.beginPath();
   context.arc(x, y, 2, 0, 2 * Math.PI);
   context.fillStyle = "black";
   context.fill();
-  context.fillRect(x, y, 1, 1);
-  context.lineTo(x, y);
-  context.stroke();
-});
+}
+
+const dragStream = mouseDownStream.pipe(
+  map(getMousePos(lineCanvas)),
+  tap(startPos => {
+    console.log({ startPos });
+    coordinates.push(startPos);
+    distanceDisplay.innerHTML = "0";
+    globalStart = startPos;
+    context.moveTo(startPos.x, startPos.y);
+    // drawDot(startPos);
+  }),
+  switchMap(event => {
+    return mouseMoveStream.pipe(
+      map(getMousePos(lineCanvas)),
+      takeUntil(
+        mouseUpStream.pipe(
+          map(getMousePos(lineCanvas)),
+          tap(endPos => {
+            console.log({ endPos });
+            const { x, y } = endPos;
+            distance = distance + getDistance(globalStart, endPos);
+            coordinates.push(endPos);
+            distanceDisplay.innerHTML = distance.toFixed(2);
+            context.lineTo(x, y);
+            context.stroke();
+          })
+        )
+      )
+    );
+  }),
+  share()
+);
+
+dragStream.subscribe();
