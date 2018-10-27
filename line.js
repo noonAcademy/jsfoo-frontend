@@ -127,12 +127,14 @@ const replayStream = replayClickStream.pipe(
   })
 );
 
-replayStream.subscribe(replayCoord => {
+replayStream.pipe(first()).subscribe(start => {
   clearCanvas(lineCanvas, context);
-
-  const [start, end] = replayCoord;
-  context.beginPath();
   context.moveTo(start.x, start.y);
-  context.lineTo(end.x, end.y);
+  context.beginPath();
+});
+
+replayStream.pipe(skip(1)).subscribe(replayCoord => {
+  const { x, y } = replayCoord;
+  context.lineTo(x, y);
   context.stroke();
 });
