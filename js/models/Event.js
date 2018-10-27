@@ -5,7 +5,7 @@ class Event {
     this.timeSlots = new Object(); //Map with key as time slot and value as array of Point objects
 
     this.buffer = new Array(); //array of Point objects
-    this.timeInterval = 100; //10 miliseconds
+    this.timeInterval = timeInterval;
     this.currTime = 0;
     this.started = false;
     this.intervalId = null;
@@ -77,6 +77,7 @@ class Event {
         onPlayEnd();
       return;
     }
+    console.table(this.actionsList);
 
     this.scheduleReplay(this.actionsList, this.actionsList.interval, callbackFunctionArg, onPlayEnd);
   }

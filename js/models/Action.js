@@ -3,8 +3,6 @@ class Action {
     this.actionType; // 1 - Point, 0 - Line
     this.x = 0;
     this.y = 0;
-    this.isMovable = false;
-    this.index = 0;
 
     if (arguments.length > 0) {
       this.actionType = arguments[0];
