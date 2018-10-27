@@ -44,26 +44,32 @@ class App extends Component {
     this.records.push(coodinates);
   }
 
-  _handleUpdateDistance = () => {
-    const len = this.records.length;
-    const P = this.records[len - 2];
-    const Q = this.records[len - 1];
+  _handleUpdateDistance = (index) => {
+    if (!index) {
+      index = this.records.length - 1;
+    }
+    const P = this.records[index - 1];
+    const Q = this.records[index];
     const distance = distanceBetweenCoordinates(P[0], P[1], Q[0], Q[1]);
     this.setState({ distance: this.state.distance + distance }); 
   }
 
-  _handleReply = () => {
+  _handleReply = async () => {
     this._handleResetCanvas();
-    this.records.map((record) => {
+
+    await Promise.all(this.records.map((record, index) => {
       return record[3].map((diff) => {
-        return setTimeout(() => {
-          this._handleDraw(record)
-        }, diff)
+        return new Promise(resolve => {
+          setTimeout(() => {
+            this._handleDraw(record, index)
+            resolve(1);
+          }, diff);
+        })
       })
-    });
+    }));
   }
 
-  _handleDraw = (coodinates) => {
+  _handleDraw = (coodinates, index) => {
     const ctx = this._getContext();
 
     const type = coodinates[2];
@@ -76,7 +82,7 @@ class App extends Component {
         // Connecting the last point with current coordinates
         ctx.lineTo(coodinates[0], coodinates[1]);
         ctx.stroke();
-        this._handleUpdateDistance();
+        this._handleUpdateDistance(index);
         break;
     default:
         // Nothing
@@ -141,7 +147,7 @@ class App extends Component {
             onMouseUp={this._handleOnMouseUp}
           />
         </div>
-        <h2>Distance: {this.state.distance} meter(s)</h2>
+        <h2>Distance: {parseFloat(this.state.distance).toFixed(2)} meter(s)</h2>
       </div>
     );
   }
