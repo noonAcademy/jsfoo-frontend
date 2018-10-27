@@ -1,6 +1,7 @@
 (function () {
   const canvas = document.getElementById('canvas')
-  const replay = document.getElementById('replay')
+  const replayButton = document.getElementById('replay')
+  const toggleDrawModeButton = document.getElementById('toggle-draw-mode')
   const distance = document.getElementById('distance')
   const canvasContext = canvas.getContext('2d')
 
@@ -9,10 +10,12 @@
   let recordingStarted = false
   let endX = 0
   let endY = 0
-
-  let totalDistance = 0
-
+  
+  // use flag to control whether to draw line segments or free-hand drawing
+  let drawAsLine = true
+  
   let startTime = new Date()
+  let totalDistance = 0
   let events = []
 
   const drawLine = (startX, startY, endX, endY) => {
@@ -49,13 +52,15 @@
       endX = event.clientX - boundingRect.left
       endY = event.clientY - boundingRect.top
 
-      // Clear canvas
-      canvasContext.clearRect(0, 0, canvas.width, canvas.height)
+      if (drawAsLine) {
+        // Clear canvas
+        canvasContext.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Repaint lines
-      for (const [_, startX, startY, endX, endY, isEndpoint] of events) {
-        if (isEndpoint) {
-          drawLine(startX, startY, endX, endY);
+        // Repaint lines
+        for (const [_, startX, startY, endX, endY, isEndpoint] of events) {
+          if (isEndpoint) {
+            drawLine(startX, startY, endX, endY);
+          }
         }
       }
 
@@ -65,9 +70,15 @@
       // Record the event
       events.push([timeDifference, startX, startY, endX, endY, false])
 
-      // Uncomment for free hand drawing
-      // startX = endX
-      // startY = endY
+      if (!drawAsLine) {
+        // Update the distance covered
+        updateTotalDistance(startX, startY, endX, endY)
+
+        // Reset start of line
+        startX = endX
+        startY = endY
+      }
+
     }
   }
 
@@ -114,30 +125,36 @@
     }
 
     setTimeout(() => {
-      // Animate drawing of the lines
-      for (let currentEventId in events) {
-        if (currentEventId > eventId) break
+      if (drawAsLine) {
+        // Animate drawing of the lines
+        for (let currentEventId in events) {
+          if (currentEventId > eventId) break
 
-        const [_, startX, startY, endX, endY, isEndpoint] = events[currentEventId]
+          const [_, startX, startY, endX, endY, isEndpoint] = events[currentEventId]
 
-        canvasContext.clearRect(0, 0, canvas.width, canvas.height)
+          canvasContext.clearRect(0, 0, canvas.width, canvas.height)
 
+          drawLine(startX, startY, endX, endY)
+        }
+
+        // Redraw the lines
+        for (let currentEventId in events) {
+          if (currentEventId > eventId) break
+
+          const [_, startX, startY, endX, endY, isEndpoint] = events[currentEventId]
+
+          if (!isEndpoint) continue
+
+          drawLine(startX, startY, endX, endY)
+        }
+
+        // Update the distance covered
+        if (isEndpoint) {
+          updateTotalDistance(startX, startY, endX, endY)
+        }
+      } else {
         drawLine(startX, startY, endX, endY)
-      }
 
-      // Redraw the lines
-      for (let currentEventId in events) {
-        if (currentEventId > eventId) break
-
-        const [_, startX, startY, endX, endY, isEndpoint] = events[currentEventId]
-
-        if (!isEndpoint) continue
-
-        drawLine(startX, startY, endX, endY)
-      }
-
-      // Update the distance covered
-      if (isEndpoint) {
         updateTotalDistance(startX, startY, endX, endY)
       }
 
@@ -146,10 +163,23 @@
     }, timeDifference)
   }
 
+  const toggleDrawMode = () => {
+    drawAsLine = !drawAsLine
+
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height)
+
+    toggleDrawModeButton.innerText = drawAsLine ? 'Switch to Free Hand Mode' : 'Switch to Line Mode'
+
+    startTime = new Date()
+    totalDistance = 0
+    events = []
+  }
+
   // Add listeners
   canvas.addEventListener('mousedown', recordStart)
   canvas.addEventListener('mousemove', recordDrag)
   canvas.addEventListener('mouseleave', recordStop)
   canvas.addEventListener('mouseup', recordStop)
-  replay.addEventListener('click', () => replayEvent())
+  replayButton.addEventListener('click', () => replayEvent())
+  toggleDrawModeButton.addEventListener('click', toggleDrawMode)
 })();
