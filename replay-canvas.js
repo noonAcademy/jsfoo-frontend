@@ -65,7 +65,9 @@ const canvas = document.getElementById('cool-draw')
 canvas.setAttribute('width', document.getElementsByClassName('container')[0].clientWidth)
 
 const ctx = canvas.getContext('2d')
-
+const payloadDisplay = document.getElementById('payload')
+const distanceDisplay = document.getElementById('distance-calculator')
+let showPayload = false
 let clickedPoints = []
 let mousepressed = false
 let distanceTravelled = 0
@@ -79,7 +81,7 @@ const updateDistance = (num = clickedPoints.length) => {
     let p2 = clickedPoints[num - 1]
     distanceTravelled += Math.hypot(p2[0] - p1[0], p2[1] - p2[1])
   }
-  document.getElementById('distance-calculator').innerHTML = `Drawn ${distanceTravelled} meters.`
+  distanceDisplay.innerHTML = `Drawn ${distanceTravelled} meters.`
 }
 
 const addPoint = (obj, index) => {
@@ -94,6 +96,15 @@ const addPoint = (obj, index) => {
     clickedPoints[index] = obj
   } else {
     clickedPoints.push(obj)
+  }
+  displayDistance()
+}
+
+const displayDistance = () => {
+  if (showPayload) {
+    payloadDisplay.innerHTML = JSON.stringify(clickedPoints, null, 2)
+  } else {
+    payloadDisplay.innerHTML = ''
   }
 }
 
@@ -110,6 +121,7 @@ const draw = (pt, index) => {
     mousepressed = false
     ctx.closePath()
   } else if (pt[2] === 'w') {
+    mousepressed = false
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
   }
 }
@@ -137,6 +149,7 @@ const mouseRecorder = ev => {
           const numPointsRegistered = clickedPoints.length
 
           if (
+            clickedPoints[numPointsRegistered - 1][2] !== 'c' &&
             !formsTriangle(
               clickedPoints[numPointsRegistered - 2],
               clickedPoints[numPointsRegistered - 1],
@@ -195,7 +208,3 @@ clearCanvas(DONT_STORE)
 canvas.addEventListener('mousedown', mouseRecorder)
 canvas.addEventListener('mousemove', mouseRecorder)
 canvas.addEventListener('mouseup', mouseRecorder)
-
-const showPayload = () => {
-  document.getElementById('payload').innerHTML = JSON.stringify(clickedPoints, null, 2)
-}

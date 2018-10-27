@@ -89,7 +89,9 @@
       <div id="distance-calculator">
 
       </div>
-      <button onclick="showPayload()">Show Payload</button>
+      <label><input type="checkbox" id="show-payload" onchange="showPayload = !showPayload; displayDistance()">Show
+        stored
+        points </label>
       <pre id="payload">
 
       </pre>
