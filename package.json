@@ -1,0 +1,25 @@
+{
+  "name": "@jsfoo/drawingboard",
+  "version": "1.0.0",
+  "description": "noonAcademy JSFoo Drawing Board Challenge",
+  "dependencies": {
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-scripts": "1.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noonAcademy/jsfoo-frontend.git"
+  },
+  "author": "Nitinkumar Bhyri",
+  "bugs": {
+    "url": "https://github.com/noonAcademy/jsfoo-frontend/issues"
+  },
+  "homepage": "https://github.com/noonAcademy/jsfoo-frontend#readme"
+}
