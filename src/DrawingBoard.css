@@ -21,3 +21,27 @@ canvas {
   margin-top: 10px;
   box-shadow: 1px 1px 3px 0px #ccc;
 }
+
+button,
+.button {
+  background: #ccc;
+  border: 1px solid #000;
+  color: #000;
+  padding: 10px;
+  margin-top: 10px;
+  margin-left: 5px;
+  outline: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover,
+.button:hover {
+  background: #979797;
+}
+
+button:disabled,
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
