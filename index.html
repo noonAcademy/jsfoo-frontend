@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cool Draw</title>
+    <link rel="stylesheet" href="styles/appStyles.css"></link>
+</head>
+<div>
+    <canvas id="myCanvas" width="500" height="400"></canvas>
+    <div id="distanceContainer">Distance travelled: <label id="distance">0</label> metres</div>
+    <br/>
+    <input id="captureBtn" class="btn" type="button" value="Capture">
+    <input id="playBtn" class="btn" type="button" value="Replay">
+    <input id="clearBtn" class="btn" type="button" value="Clear">
+    <input id="stopBtn" class="btn" type="button" value="Stop">
+
+    <script type="application/javascript" src="js/constants/appConstants.js"></script>
+    <script type="application/javascript" src="js/models/Action.js"></script>
+    <script type="application/javascript" src="js/models/ActionLinkedList.js"></script>
+    <script type="application/javascript" src="js/models/Pixel.js"></script>
+    <script type="application/javascript" src="js/models/CanvasDrawing.js"></script>
+    <script type="application/javascript" src="js/models/Event.js"></script>
+    <script type="application/javascript" src="js/coolDraw.js"></script>
+</body>
+</html>
