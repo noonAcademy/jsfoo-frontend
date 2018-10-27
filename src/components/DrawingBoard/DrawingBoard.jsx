@@ -22,8 +22,16 @@ class DrawingBoard extends Component {
   updatePointer = () => {
     const { lines, replayLineInd, pointInd, updatePointInd } = this.props;
     if (lines[replayLineInd][pointInd + 1]) {
-      const diff = lines[replayLineInd][pointInd + 1] - lines[replayLineInd][pointInd];
+      const diff = lines[replayLineInd][pointInd + 1].diffFromBegin - lines[replayLineInd][pointInd].diffFromBegin;
       setTimeout(updatePointInd, diff)
+    }
+  };
+
+  updateLineWithDelay = () => {
+    const { lines, replayLineInd, pointInd, updateReplayInd } = this.props;
+    if (lines[replayLineInd + 1]) {
+      const diff =  lines[replayLineInd + 1][0].diffFromBegin - lines[replayLineInd][pointInd].diffFromBegin;
+      setTimeout(updateReplayInd, diff);
     }
   };
 
@@ -41,7 +49,7 @@ class DrawingBoard extends Component {
       } else if (prevProps.pointInd !== this.props.pointInd) {
         if (this.props.pointInd === lines[replayLineInd].length - 1) {
           this.endLine({clientX: lines[replayLineInd][pointInd].x, clientY: lines[replayLineInd][pointInd].y});
-          this.props.updateReplayInd();
+          this.updateLineWithDelay();
         } else if (this.props.pointInd < lines[replayLineInd].length - 1){
           this.eraseTempAndCreateNewLine({clientX: lines[replayLineInd][pointInd].x, clientY: lines[replayLineInd][pointInd].y});
           this.updatePointer();
@@ -62,13 +70,15 @@ class DrawingBoard extends Component {
 
   createLine = (event) => {
     this.ctx.beginPath();
-    const { x: begX, y: begY } = this.canvasData.curLine[0];
+    const { curLine } = this.canvasData;
+    const { x: begX, y: begY } = curLine[0];
     const { x: endX, y: endY } = this.getCorrectedPosition(event.clientX, event.clientY);
     this.ctx.moveTo(begX, begY);
     this.ctx.lineTo(endX, endY);
     this.ctx.stroke();
     this.ctx.closePath();
-    this.canvasData.curLine.push({x: endX, y: endY, diffFromBegin: new Date().getTime() - this.props.beginTime});
+    const diffFromBegin = new Date().getTime() - this.props.beginTime;
+    this.canvasData.curLine.push({x: endX, y: endY, diffFromBegin: diffFromBegin});
   };
 
   startLine = (event) => {
@@ -76,7 +86,10 @@ class DrawingBoard extends Component {
     this.ctx.moveTo(clientX, clientY);
     this.canvasData = {
       isDrawing: true,
-      curLine: [this.getCorrectedPosition(clientX, clientY)]
+      curLine: [{
+        ...this.getCorrectedPosition(clientX, clientY),
+        diffFromBegin: new Date().getTime() - this.props.beginTime
+      }]
     };
     this.canvasBeforeMouseMove = this.ctx.getImageData(0, 0, this.ctx.canvas.clientWidth, this.ctx.canvas.clientHeight);
   }

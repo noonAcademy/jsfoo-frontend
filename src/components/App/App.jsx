@@ -53,7 +53,6 @@ class App extends Component {
   };
 
   updatePointInd = () => {
-    console.log(this.state.pointInd);
     this.setState({
       pointInd: this.state.pointInd + 1
     });
@@ -75,7 +74,7 @@ class App extends Component {
         />
         <div>
           <input type="button" value="Replay" onClick={this.startReplay} />
-          <label>Total Distance {this.state.totalDistCovered}m</label>
+          <label>Total Distance {this.state.totalDistCovered.toFixed(2)}m</label>
         </div>
       </React.Fragment>
     );
