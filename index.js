@@ -10,25 +10,25 @@
   let recordingStarted = false
   let endX = 0
   let endY = 0
-  
+
   // use flag to control whether to draw line segments or free-hand drawing
   let drawAsLine = true
-  
+
   let startTime = new Date()
   let totalDistance = 0
   let events = []
 
   const drawLine = (startX, startY, endX, endY) => {
-    canvasContext.beginPath();
-    canvasContext.strokeStyle = 'black';
-    canvasContext.moveTo(startX, startY);
-    canvasContext.lineTo(endX, endY);
-    canvasContext.stroke();
+    canvasContext.beginPath()
+    canvasContext.strokeStyle = 'black'
+    canvasContext.moveTo(startX, startY)
+    canvasContext.lineTo(endX, endY)
+    canvasContext.stroke()
   }
 
   const updateTotalDistance = (startX, startY, endX, endY) => {
-    totalDistance += Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY));
-    distance.innerText = `Distance Covered: ${Math.round(totalDistance * 100) / 100} m`;
+    totalDistance += Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY))
+    distance.innerText = `Distance Covered: ${Math.round(totalDistance * 100) / 100} m`
   }
 
   const recordStart = (event) => {
@@ -59,7 +59,7 @@
         // Repaint lines
         for (const [_, startX, startY, endX, endY, isEndpoint] of events) {
           if (isEndpoint) {
-            drawLine(startX, startY, endX, endY);
+            drawLine(startX, startY, endX, endY)
           }
         }
       }
@@ -169,6 +169,8 @@
     canvasContext.clearRect(0, 0, canvas.width, canvas.height)
 
     toggleDrawModeButton.innerText = drawAsLine ? 'Switch to Free Hand Mode' : 'Switch to Line Mode'
+    distance.innerText = 'Distance Covered: 0.00 m'
+
 
     startTime = new Date()
     totalDistance = 0
@@ -182,4 +184,4 @@
   canvas.addEventListener('mouseup', recordStop)
   replayButton.addEventListener('click', () => replayEvent())
   toggleDrawModeButton.addEventListener('click', toggleDrawMode)
-})();
+})()
