@@ -1,12 +1,11 @@
 {
-  // to restrict use of global variable, we are not using onClick in HTML
-  const playBtn = document.getElementById('playBtn');
-  const captureBtn = document.getElementById('captureBtn');
-  const clearBtn = document.getElementById('clearBtn');
-  const stopBtn = document.getElementById('stopBtn');
-  const myCanvas = document.getElementById('myCanvas');
-  const distanceEle = document.getElementById('distance');
-  const distanceContainer = document.getElementById('distanceContainer');
+  let playBtn;
+  let captureBtn;
+  let clearBtn;
+  let stopBtn;
+  let myCanvas;
+  let distanceEle;
+  let distanceContainer;
 
   const show = function() {
     this.style.display = 'inline';
@@ -54,6 +53,15 @@
   };
 
   window.addEventListener('load', () => {
+
+    // to restrict use of global variable, we are not using onClick in HTML
+    playBtn = document.getElementById('playBtn');
+    captureBtn = document.getElementById('captureBtn');
+    clearBtn = document.getElementById('clearBtn');
+    stopBtn = document.getElementById('stopBtn');
+    myCanvas = document.getElementById('myCanvas');
+    distanceEle = document.getElementById('distance');
+    distanceContainer = document.getElementById('distanceContainer');
 
     HTMLInputElement.prototype.show = show;
     HTMLDivElement.prototype.show = showBlock;
