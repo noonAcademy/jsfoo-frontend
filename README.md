@@ -2,15 +2,6 @@
 
 SUPER EFFICIENT DRAWING BOARD
 
-## Why should I do it?
-1. The best solution will receive an Amazon Kindle
-<br /><br />
-<img src="https://images-na.ssl-images-amazon.com/images/I/51hrdzXLUHL.jpg" width=100>
-
-2. The second best solution will receive a Sony Headphone
-<br /><br />
-<img src="https://brain-images-ssl.cdn.dixons.com/4/9/10145294/u_10145294.jpg" width=100>
-
 ## Ok... But what am I supposed to do?
   - [ ] [COOL DRAW](#cool-draw)
   - [ ] [DISTANCE CALCULATOR](#distance-calculator)
@@ -36,7 +27,7 @@ Ex: Suppose to draw a line, you used events in the following order
     1. mouseDown
     2. drag(s)
     3. mouseUp
-Example: 
+Example:
 ```
 [
   {
@@ -73,7 +64,7 @@ Then you need to reduce the overall size of the array, and the size of the indiv
 
 ## How will you guys contact me?
 1. Mention your details here:
-    1. Name:
-    2. Email:
-    3. Contact Number:
-    4. Company Name: 
+    1. Name: Jagadish, K.
+    2. Email: k.jagdish@gmail.com
+    3. Contact Number: 9916128366
+    4. Company Name: Walmart
