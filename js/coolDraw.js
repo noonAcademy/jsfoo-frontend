@@ -19,26 +19,26 @@
     this.style.display = 'none';
   };
 
-  const stopRecording = (drawing) => {
+  const stopCapturing = (drawing) => {
     captureBtn.show();
     stopBtn.hide();
     playBtn.show();
     clearBtn.show();
 
-    drawing.stopRecording();
+    drawing.stopCapturing();
   };
 
-  const startRecording = (drawing) => {
+  const startCapturing = (drawing) => {
     playBtn.hide();
     captureBtn.hide();
     stopBtn.show();
     clearBtn.hide();
 
-    drawing.startRecording();
+    drawing.startCapturing();
   };
 
   const startPlayback = (drawing) => {
-    drawing.playEvents(() => {
+    drawing.replayEvents(() => {
       //on playback start
       playBtn.hide();
       captureBtn.hide();
@@ -64,14 +64,14 @@
     stopBtn.hide();
 
     // initializing canvas event Handlers
-    const drawing = new ReplayEvents(myCanvas, distanceEle);
+    const drawing = new CanvasDrawing(myCanvas, distanceEle);
 
     captureBtn.addEventListener('click', () => {
-      startRecording(drawing);
+      startCapturing(drawing);
     });
 
     stopBtn.addEventListener('click', () => {
-      stopRecording(drawing);
+      stopCapturing(drawing);
     });
 
     playBtn.addEventListener('click', () => {

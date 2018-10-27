@@ -1,3 +1,4 @@
+// This captures every action done by the user
 class Event {
   constructor(drawingArg) {
     this.drawing = drawingArg;

@@ -1,3 +1,4 @@
+// This stores action and the type of event.
 class Pixel extends Action {
   constructor (argX, argY, typeArg) {
     super(1, argX, argY);

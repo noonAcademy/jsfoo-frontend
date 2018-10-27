@@ -1,4 +1,4 @@
-class ReplayEvents {
+class CanvasDrawing {
   constructor (myCanvas, distanceEle) {
     this.canvas = null;
     this.width = this.height = 0;
@@ -24,9 +24,9 @@ class ReplayEvents {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    this.startRecording = this.startRecording.bind(this);
-    this.stopRecording = this.stopRecording.bind(this);
-    this.playEvents = this.playEvents.bind(this);
+    this.startCapturing = this.startCapturing.bind(this);
+    this.stopCapturing = this.stopCapturing.bind(this);
+    this.replayEvents = this.replayEvents.bind(this);
     this.clearCanvas = this.clearCanvas.bind(this);
     this.drawAction = this.drawAction.bind(this);
 
@@ -41,6 +41,7 @@ class ReplayEvents {
     return distance;
   }
 
+  // adding action to the event
   onMouseDown(event) {
     const canvasX = this.canvas.offsetLeft;
     const canvasY = this.canvas.offsetTop;
@@ -61,6 +62,7 @@ class ReplayEvents {
     return false;
   }
 
+  // adding each action to the event and drawing on the canvas
   onMouseMove(event) {
     if (this.mouseDown) {
       const canvasX = this.canvas.offsetLeft;
@@ -90,23 +92,23 @@ class ReplayEvents {
     this.lastMouseY = -1;
   }
 
-  startRecording() {
+  startCapturing() {
     this.currentEvent = new Event(this);
     this.events = new Array();
     this.events.push(this.currentEvent);
     this.currentEvent.start();
   }
 
-  stopRecording() {
+  stopCapturing() {
     if (this.currentEvent != null) {
       this.currentEvent.stop();
     }
     this.currentEvent = null;
   };
 
-  playEvents(onPlayStart, onPlayEnd) {
+  replayEvents(onPlayStart, onPlayEnd) {
     if (this.events.length === 0) {
-      alert('No recording loaded to replay');
+      alert('No captured events loaded to replay');
       onPlayEnd();
       return;
     }
@@ -126,6 +128,7 @@ class ReplayEvents {
     this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
   }
 
+  //draw on the canvas
   drawAction(actionArg, addToArray) {
     const x = actionArg.x;
     const y = actionArg.y;
