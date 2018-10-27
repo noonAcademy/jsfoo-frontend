@@ -1,4 +1,13 @@
-import { fromEvent, merge, concat, interval, from, combineLatest } from "rxjs";
+import {
+  empty,
+  fromEvent,
+  merge,
+  concat,
+  interval,
+  from,
+  combineLatest,
+  zip
+} from "rxjs";
 import {
   switchMap,
   takeUntil,
@@ -22,10 +31,12 @@ import {
 
 const lineCanvas = document.getElementById("lineDraw");
 const distanceDisplay = document.getElementById("distance");
+const replayButton = document.getElementById("replay");
 
 const mouseMoveStream = fromEvent(lineCanvas, "mousemove");
 const mouseUpStream = fromEvent(lineCanvas, "mouseup");
 const mouseDownStream = fromEvent(lineCanvas, "mousedown");
+const replayClickStream = fromEvent(replayButton, "click");
 
 const context = lineCanvas.getContext("2d");
 
@@ -38,6 +49,11 @@ function getMousePos(canvas) {
       eventType: event.type
     };
   };
+}
+
+function clearCanvas(canvas, context) {
+  const { width, height } = canvas.getBoundingClientRect();
+  context.clearRect(0, 0, width, height);
 }
 
 function getDistance(start, end) {
@@ -54,6 +70,9 @@ const dragEndStream = mouseUpStream.pipe(map(getMousePos(lineCanvas)));
 let globalStart = { x: 0, y: 0 };
 let distance = 0;
 let coordinates = [];
+let startTime;
+let endTime;
+let firstInterval;
 
 function drawDot({ x, y }) {
   context.beginPath();
@@ -65,33 +84,55 @@ function drawDot({ x, y }) {
 const dragStream = mouseDownStream.pipe(
   map(getMousePos(lineCanvas)),
   tap(startPos => {
-    console.log({ startPos });
-    coordinates.push(startPos);
-    distanceDisplay.innerHTML = "0";
-    globalStart = startPos;
+    const { width, height } = lineCanvas.getBoundingClientRect();
+    // context.clearRect(0, 0, width, height);
     context.moveTo(startPos.x, startPos.y);
-    // drawDot(startPos);
   }),
   switchMap(event => {
     return mouseMoveStream.pipe(
       map(getMousePos(lineCanvas)),
-      takeUntil(
-        mouseUpStream.pipe(
-          map(getMousePos(lineCanvas)),
-          tap(endPos => {
-            console.log({ endPos });
-            const { x, y } = endPos;
-            distance = distance + getDistance(globalStart, endPos);
-            coordinates.push(endPos);
-            distanceDisplay.innerHTML = distance.toFixed(2);
-            context.lineTo(x, y);
-            context.stroke();
-          })
-        )
-      )
+      takeUntil(mouseUpStream)
     );
   }),
   share()
 );
 
-dragStream.subscribe();
+dragStream
+  .pipe(
+    scan((acc, curr) => {
+      return acc + 1;
+    }, 0)
+  )
+  .subscribe(distance => {
+    distanceDisplay.innerHTML = distance;
+  });
+
+dragStream.pipe(take(1), timeInterval()).subscribe(time => {
+  firstInterval = time.interval;
+});
+
+dragStream.subscribe(endCoord => {
+  context.lineTo(endCoord.x, endCoord.y);
+  context.stroke();
+});
+
+dragStream.pipe(buffer(replayClickStream)).subscribe(coords => {
+  coordinates = coords;
+});
+
+const replayStream = replayClickStream.pipe(
+  switchMap(e => {
+    if (!firstInterval || coordinates.length === 0) return empty();
+    return zip(from(coordinates), interval(firstInterval), point => point);
+  })
+);
+
+replayStream.subscribe(replayCoord => {
+  clearCanvas(lineCanvas, context);
+
+  const [start, end] = replayCoord;
+  context.beginPath();
+  context.moveTo(start.x, start.y);
+  context.lineTo(end.x, end.y);
+  context.stroke();
+});
