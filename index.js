@@ -13,6 +13,19 @@
   let startTime = new Date()
   let events = []
 
+  const drawLine = (startX, startY, endX, endY) => {
+    canvasContext.beginPath();
+    canvasContext.strokeStyle = 'black';
+    canvasContext.moveTo(startX, startY);
+    canvasContext.lineTo(endX, endY);
+    canvasContext.stroke();
+  }
+
+  const updateTotalDistance = (startX, startY, endX, endY) => {
+    totalDistance += Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY));
+    distance.innerText = `Distance Covered: ${Math.round(totalDistance * 100) / 100} m`;
+  }
+
   const recordStart = (event) => {
     recordingStarted = true
 
@@ -37,15 +50,10 @@
       const endY = event.clientY - boundingRect.top
 
       // Draw the line
-      canvasContext.beginPath()
-      canvasContext.strokeStyle = 'black'
-      canvasContext.moveTo(startX, startY)
-      canvasContext.lineTo(endX, endY)
-      canvasContext.stroke()
+      drawLine(startX, startY, endX, endY)
 
       // Update the distance covered
-      totalDistance += Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY))
-      distance.innerText = `Distance Covered: ${Math.round(totalDistance * 100) / 100} m`
+      updateTotalDistance(startX, startY, endX, endY)
 
       // Record the event
       events.push([timeDifference, startX, startY, endX, endY])
@@ -71,15 +79,10 @@
 
     setTimeout(() => {
       // Draw the line
-      canvasContext.beginPath()
-      canvasContext.strokeStyle = 'black'
-      canvasContext.moveTo(startX, startY)
-      canvasContext.lineTo(endX, endY)
-      canvasContext.stroke()
+      drawLine(startX, startY, endX, endY)
 
       // Update the distance covered
-      totalDistance += Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY))
-      distance.innerText = `Distance Covered: ${Math.round(totalDistance * 100) / 100} m`
+      updateTotalDistance(startX, startY, endX, endY)
 
       // Replay next event
       replayEvent(eventId + 1)
