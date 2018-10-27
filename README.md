@@ -88,3 +88,10 @@ Then you need to reduce the overall size of the array, and the size of the indiv
     2.  Email: varen90@gmail.com
     3.  Contact Number: 9620473835
     4.  Company Name: Equal Experts
+
+## Run Instruction :
+
+1.  Node Version : 10.1.0
+2.  `yarn`
+3.  `yarn dev`
+4.  open `http://localhost:1234`
