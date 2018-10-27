@@ -1,0 +1,140 @@
+<html>
+<head>
+	<title>Canvas</title>
+	<style>
+		body {
+			margin: 0;
+			border: 0;
+		}
+
+		#canvas-actual {
+			border: 1px solid black;
+			width: 500px;
+			height: 500px;
+		}
+
+		#distMeterDiv {
+			margin: 10px;
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+</head>
+<body>
+	<canvas id="canvas-actual" width = "500px" height = "500px">
+	</canvas>
+	
+	<div id="distMeterDiv"><p><span id="distMeter">0</span> meters</p></div>
+
+	<button id="replay-button">Replay</button>
+
+	<script>
+		var distDisp = $("#distMeter");
+		var canvas_div = $("#canvas")
+		var canvas = $("#canvas-actual");
+		var canvas_ctx = document.getElementById("canvas-actual").getContext("2d");
+		var isMouseDown = false;
+		var lastMouseLoc = null;
+		var dist = 0.0;
+		var mouseEventLog = [];
+		var mouseEventLogBackup = [];
+		var currentMouseIter = 0;
+
+
+		var canvasMouseDownHandler = function(evt) {
+			isMouseDown = true;
+			canvas_ctx.beginPath();
+			canvas_ctx.moveTo(evt.clientX, evt.clientY);
+			window.lastMouseLoc = {x: evt.clientX, y: evt.clientY, time: Date.now()};
+			// Logs events for replay (compressed af)
+			mouseEventLog.push({
+				type: "mouseDown",
+				mouseX: evt.clientX,
+				mouseY: evt.clientY,
+				time: Date.now()
+			});
+		}
+
+		canvas.mousedown(canvasMouseDownHandler);
+
+		var canvasMouseMoveHandler = function (evt) {
+			if(isMouseDown) {
+				// Do drawing logic
+				if(!sameAsLastEvent(lastMouseLoc, {x: evt.clientX, y: evt.clientY})) {
+					// Draw the line
+					canvas_ctx.lineTo(evt.clientX, evt.clientY)
+					canvas_ctx.stroke();
+					dist += Math.sqrt(Math.pow(lastMouseLoc.x - evt.clientX, 2) + Math.pow(lastMouseLoc.y - evt.clientY, 2));
+					distDisp.text(dist.toFixed(2));
+					// Logs events for replay (compressed af)
+					mouseEventLog.push({
+						type: "drag",
+						mouseX: evt.clientX,
+						mouseY: evt.clientY,
+						time: Date.now() - window.lastMouseLoc.time
+					});
+					window.lastMouseLoc = {x: evt.clientX, y: evt.clientY, time: Date.now()};
+				}
+			}
+		}
+
+		canvas.mousemove(canvasMouseMoveHandler)
+
+		var canvasMouseUpHandler = function(evt) {
+			isMouseDown = false;
+			// Logs events for replay (compressed af)
+			mouseEventLog.push({
+				type: "mouseUp",
+				mouseX: evt.clientX,
+				mouseY: evt.clientY,
+				time: Date.now()
+			});
+		}
+
+		canvas.mouseup(canvasMouseUpHandler)
+
+		var sameAsLastEvent = function(lastMouseLoc, currLoc) {
+			if(!lastMouseLoc) return false;
+			var res = (lastMouseLoc.x == currLoc.x) && (lastMouseLoc.y == currLoc.y);
+			return res;
+		}
+
+		var replay = function () {
+			if(currentMouseIter == mouseEventLogBackup.length) {
+				return;
+			}
+
+			var mouseEvent = mouseEventLogBackup[currentMouseIter++];
+			
+			if(mouseEvent.type == "mouseDown") {
+				canvasMouseDownHandler({clientX: mouseEvent.mouseX, clientY: mouseEvent.mouseY});
+				setTimeout(replay, mouseEventLogBackup[currentMouseIter].time);
+			}
+			else if(mouseEvent.type == "drag") {
+				canvasMouseMoveHandler({clientX: mouseEvent.mouseX, clientY: mouseEvent.mouseY});
+				if(currentMouseIter != mouseEventLogBackup.length - 1) {
+					setTimeout(replay, mouseEventLogBackup[currentMouseIter].time);
+				}
+				else {
+					setTimeout(replay, 5);
+				}
+			}
+			else if(mouseEvent.type == "mouseUp") {
+				canvasMouseUpHandler({clientX: mouseEvent.mouseX, clientY: mouseEvent.mouseY});
+				if(currentMouseIter < mouseEventLogBackup.length) {
+					setTimeout(replay, mouseEventLogBackup[currentMouseIter-1].time - mouseEventLogBackup[currentMouseIter - 2].time);
+				}
+			}
+		}
+
+		$("#replay-button").click(function() {
+			canvas_ctx.clearRect(0, 0, canvas.width(), canvas.height());
+			dist = 0.0;
+			distDisp.text(dist.toFixed(2));
+			mouseEventLogBackup = mouseEventLog.slice(0);
+			mouseEventLog = [];
+			currentMouseIter = 0;
+			replay();
+		});
+	</script>
+</body>
+</html>
