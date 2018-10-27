@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Line Draw</title>
+	<style>
+		body{
+			font-family: Arial;
+		}
+		button{
+			display: inline-block;
+			width: 100px;
+			border: 1px solid #fff;
+			padding: 5px;
+			font-size: 14px;
+			background-color: #40A9FF;
+			color: #fff;
+			border-radius: 5px;
+			margin: 10px 5px 20px;
+			cursor: pointer;
+		}
+		button:disabled{
+			background: #e3e3e3;
+			cursor: not-allowed;
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+		<p id="totalLineDrawn"></p>
+		<button id="clear">Clear</button>
+		<button id="replay">Replay</button>
+	</div>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js'></script>
+	<script  src="index.js"></script>
+</body>
+</html>
