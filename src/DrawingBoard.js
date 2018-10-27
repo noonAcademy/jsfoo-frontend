@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { distanceBetweenCoordinates } from "./utils";
-import './App.css';
+import './DrawingBoard.css';
 
 class App extends Component {
   constructor(props) {
